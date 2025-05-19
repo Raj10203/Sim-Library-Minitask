@@ -1,0 +1,12 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}2FA Enable{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <h4 class="mb-1">Multi - Factor Authentication!</h4>
+    <p class="mb-6">Please use authenticator app to get otp</p>
+    <img src="{{ path('app_auth_qr_code') }}" alt="qr-code-of-authenticator-app-login">
+
+    </div>
+{% endblock %}

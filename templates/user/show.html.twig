@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% set current_page = 'aside-menu-users' %}
+
+{% block title %}Sites{% endblock %}
+
+{% block additional_js %}
+    {{ include('partials/active_menu_script.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <h3 class="fw-bold py-3 mb-4 ms-3">
+        Sites
+    </h3>
+    <div class="card pb-2 container-fluid">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Site</h5>
+            <div>
+                <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                    <i class="bx bx-arrow-back me-0 me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Back to List</span>
+                </a>
+                <a href="{{ path('app_auth_register') }}" class="btn btn-primary">
+                    <i class="bx bx-plus me-0 me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Add User</span>
+                </a>
+            </div>
+        </div>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>
+                    {% set roles = user.roles %}
+                    {{ roles | join(', ') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Active</th>
+                <td>{{ user.active ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>IsVerified</th>
+                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex p-2">
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn btn-primary">Edit</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const path = window.location.pathname;
+
+        const routeMap = {
+            '/admin': '#aside-menu-admin',
+            '/stock': '#aside-menu-stock',
+        };
+
+        for (const prefix in routeMap) {
+            if (path.startsWith(prefix)) {
+                document.querySelector(routeMap[prefix])?.classList.add('active', 'open');
+                break;
+            }
+        }
+    });
+</script>

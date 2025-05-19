@@ -1,0 +1,27 @@
+{% extends 'auth.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <h4 class="mb-1">Adventure starts here 🚀</h4>
+    <p class="mb-6">Make your app management easy and fun!</p>
+
+    {{ form_errors(registrationForm) }}
+    {{ form_start(registrationForm) }}
+
+    {% for field in registrationForm %}
+        <div class="form-group my-4">
+            {{ form_row(field) }}
+        </div>
+    {% endfor %}
+
+    <button class="btn btn-primary d-grid w-100">Sign up</button>
+    {{ form_end(registrationForm) }}
+
+    <p class="text-center">
+        <span>Already have an account?</span>
+        <a href="{{ path('app_auth_login') }}">
+            <span>Sign in instead</span>
+        </a>
+    </p>
+{% endblock %}
