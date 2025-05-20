@@ -21,7 +21,7 @@ class LoanReturnedEventListener
      * @throws TransportExceptionInterface
      */
     #[NoReturn]
-    #[AsEventListener(event: LoanReturnedEvent::NAME)]
+    #[AsEventListener(event: LoanReturnedEvent::LOAN_RETURNED)]
     public function onLoanReturned(LoanReturnedEvent $event): void
     {
         $loan = $event->getLoan();

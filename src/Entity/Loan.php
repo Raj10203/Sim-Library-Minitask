@@ -11,6 +11,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Loan
 {
     use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,7 +38,9 @@ class Loan
     {
         $now = new \DateTimeImmutable();
         $this->borrowedAt = new \DateTimeImmutable();
-        $this->dueAt = $now->modify('+14 day');
+        if (!$this->dueAt) {
+            $this->dueAt = $now->modify('+14 day');
+        }
     }
 
     public function getId(): ?int

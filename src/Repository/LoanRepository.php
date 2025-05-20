@@ -38,6 +38,25 @@ class LoanRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
+    public function createDueLoanQueryBuilder(): Query
+    {
+        $query = $this->createQueryBuilder('loan')
+            ->select('loan');
+
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $query = $query->andWhere('loan.user = :user')
+                ->setParameter('user', $this->security->getUser());
+
+        }
+        $query = $query->andWhere('loan.returnedAt IS NULL')
+            ->andWhere('loan.dueAt < :dueAt')
+            ->setParameter('dueAt', new \DateTime('now'));
+
+        return $query
+            ->orderBy('loan.dueAt', 'ASC')
+            ->getQuery();
+    }
+
     //    /**
     //     * @return Loan[] Returns an array of Loan objects
     //     */

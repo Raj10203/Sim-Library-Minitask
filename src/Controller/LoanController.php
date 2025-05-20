@@ -60,7 +60,9 @@ final class LoanController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $loan->setUser($this->getUser());
+            if (!$loan->getUser()) {
+                $loan->setUser($this->getUser());
+            }
             $loan->setBook($book);
             $book->setIsAvailable(false);
             $entityManager->persist($loan);
@@ -127,12 +129,11 @@ final class LoanController extends BaseController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $book->setIsAvailable(true);
             $loan->setReturnedAt(new \DateTimeImmutable());
             $entityManager->persist($loan);
             $entityManager->flush();
 
-            $dispatcher->dispatch(new LoanReturnedEvent($loan), LoanReturnedEvent::NAME);
+            $dispatcher->dispatch(new LoanReturnedEvent($loan), LoanReturnedEvent::LOAN_RETURNED);
 
             return $this->redirectToRoute('app_loan_borrow', [], Response::HTTP_SEE_OTHER);
         }

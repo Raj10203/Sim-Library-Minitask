@@ -22,11 +22,12 @@ class LoanForm extends AbstractType
     {
         if($this->security->isGranted('ROLE_ADMIN')) {
             $builder
-                ->add('returnedAt', null, [
+                ->add('dueAt', null, [
                     'widget' => 'single_text',
                     'attr' => [
                         'class' => 'form-control',
-                    ]
+                    ],
+                    'required' => false,
                 ])
                 ->add('book', EntityType::class, [
                     'class' => Book::class,

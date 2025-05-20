@@ -30,7 +30,8 @@
                     </thead>
                     <tbody>
                     {% for loan in loans %}
-                        <tr>
+                        <tr {{ (loan.dueAt|days_between(loan.borrowedAt , loan.returnedAt) < 0 ) ?
+                        'class="bg-gradient-light "' : "" }} >
                             <td>{{ loan.id }}</td>
                             <td>{{ loan.book.title }}</td>
                             <td>{{ loan.book.author }}</td>

@@ -17,6 +17,9 @@ class DaysBetweenRuntime implements RuntimeExtensionInterface
             return 0;
         }
 
-        return $start->diff($end)->days;
+        $diff = $start->diff($end);
+        $days = $diff->days;
+
+        return $diff->invert ? $days : -$days;
     }
 }
