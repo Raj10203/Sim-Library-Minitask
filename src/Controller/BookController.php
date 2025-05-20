@@ -6,19 +6,39 @@ use App\Entity\Book;
 use App\Form\BookForm;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/book')]
-final class BookController extends AbstractController
+#[isGranted('ROLE_LIBRARIAN')]
+final class BookController extends BaseController
 {
-    #[Route(name: 'app_book_index', methods: ['GET'])]
-    public function index(BookRepository $bookRepository): Response
+    public function __construct(private PaginatorInterface $paginator)
     {
+    }
+
+    #[Route(name: 'app_book_index', methods: ['GET'])]
+    public function index(
+        BookRepository $bookRepository,
+        Request $request,
+    ): Response
+    {
+        $queryBuilder = $bookRepository->createBooksQueryBuilder();
+
+        $paginator = $this->paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10),
+            [
+                'pageRange' => 3
+            ]
+        );
         return $this->render('book/index.html.twig', [
-            'books' => $bookRepository->findAll(),
+            'books' => $paginator,
         ]);
     }
 

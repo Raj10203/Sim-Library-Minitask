@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% set current_page = 'aside-menu-loan-return' %}
+
+{% block title %}Borrow Book{% endblock %}
+
+{% block additional_js %}
+    {{ include('partials/active_menu_script.html.twig') }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Available Books</h5>
+        </div>
+        <div class="my-2">
+            <div class="table-responsive text-nowrap scrollable-container overflow-hidden">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Book Title</th>
+                        <th>Author</th>
+                        <th>User</th>
+                        <th>DueAt</th>
+                        <th>Borrowed At</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for loan in loans %}
+                        <tr>
+                            <td>{{ loan.id }}</td>
+                            <td>{{ loan.book.title }}</td>
+                            <td>{{ loan.book.author }}</td>
+                            <td>{{ loan.user.email }}</td>
+                            <td>{{ loan.dueAt ? loan.dueAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ loan.borrowedAt ? loan.returnedAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>
+                                <a href="{{ path('app_loan_return_book', {'id': loan.id}) }}" class="btn btn-sm
+                                btn-success">
+                                    <i class='menu-icon bx bx-arrow-back'></i>
+                                    Return Book
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">no books borrowed</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="mt-2 ms-2 pagination">
+                    <div class="navigation">
+                        {{ knp_pagination_render(loans) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

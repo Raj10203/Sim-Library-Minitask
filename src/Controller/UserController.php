@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/admin/user')]
 #[IsGranted('ROLE_LIBRARIAN')]
-final class UserController extends AbstractController
+final class UserController extends BaseController
 {
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response

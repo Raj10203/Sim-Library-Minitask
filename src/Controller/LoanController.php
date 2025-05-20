@@ -2,25 +2,78 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
 use App\Entity\Loan;
+use App\Event\LoanReturnedEvent;
 use App\Form\LoanForm;
 use App\Repository\BookRepository;
 use App\Repository\LoanRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/loan')]
-final class LoanController extends AbstractController
+final class LoanController extends BaseController
 {
-    public function borrowBook(
-        Request $request,
-        BookRepository $bookRepository,
-    )
+    public function __construct(private PaginatorInterface $paginator)
     {
-        $bookRepository->getAvailableBooks();
+    }
+
+    #[Route('/borrow', name: 'app_loan_borrow', methods: ['GET'])]
+    public function borrow(
+        Request        $request,
+        BookRepository $bookRepository,
+    ): Response
+    {
+        $queryBuilder = $bookRepository->createAvailableBooksQueryBuilder();
+
+        $paginator = $this->paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 5),
+            [
+                'pageRange' => 3
+            ]
+        );
+
+        return $this->render('loan/borrow.html.twig', [
+            'books' => $paginator
+        ]);
+    }
+
+    #[Route('/borrow/{id}', name: 'app_loan_borrow_book', methods: ['GET', 'POST'])]
+    public function borrowBook(
+        Book                   $book,
+        Request                $request,
+        BookRepository         $bookRepository,
+        EntityManagerInterface $entityManager,
+    ): Response
+    {
+        if (!$book->isAvailable()) {
+            return $this->redirectToRoute('app_loan_borrow', [], Response::HTTP_SEE_OTHER);
+        }
+        $loan = new Loan();
+        $form = $this->createForm(LoanForm::class, $loan);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $loan->setUser($this->getUser());
+            $loan->setBook($book);
+            $book->setIsAvailable(false);
+            $entityManager->persist($loan);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_loan_borrow', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('loan/new.html.twig', [
+            'loan' => $loan,
+            'form' => $form,
+            'book' => $book,
+        ]);
     }
 
     #[Route(name: 'app_loan_index', methods: ['GET'])]
@@ -31,23 +84,63 @@ final class LoanController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_loan_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/return', name: 'app_loan_return', methods: ['GET'])]
+    public function return(
+        Request        $request,
+        LoanRepository $loanRepository,
+    ): Response
     {
-        $loan = new Loan();
-        $form = $this->createForm(LoanForm::class, $loan);
+        $queryBuilder = $loanRepository->createLoanQueryBuilder();
+
+        $paginator = $this->paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10),
+            [
+                'pageRange' => 3
+            ]
+        );
+        return $this->render('loan/return.html.twig', [
+            'loans' => $paginator,
+        ]);
+    }
+
+    #[Route('/return/{id}', name: 'app_loan_return_book', methods: ['GET', 'POST'])]
+    public function returnBook(
+        Loan                     $loan,
+        Request                  $request,
+        BookRepository           $bookRepository,
+        EntityManagerInterface   $entityManager,
+        EventDispatcherInterface $dispatcher
+    ): Response
+    {
+        if ($loan->getReturnedAt()) {
+            return $this->redirectToRoute('app_loan_return', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $form = $this->createForm(LoanForm::class, $loan, [
+            'submit_label' => 'Return Book'
+        ]);
+
         $form->handleRequest($request);
+        $book = $loan->getBook();
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $book->setIsAvailable(true);
+            $loan->setReturnedAt(new \DateTimeImmutable());
             $entityManager->persist($loan);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_loan_index', [], Response::HTTP_SEE_OTHER);
+            $dispatcher->dispatch(new LoanReturnedEvent($loan), LoanReturnedEvent::NAME);
+
+            return $this->redirectToRoute('app_loan_borrow', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('loan/new.html.twig', [
+        return $this->render('loan/return_book.html.twig', [
             'loan' => $loan,
             'form' => $form,
+            'book' => $book,
         ]);
     }
 
