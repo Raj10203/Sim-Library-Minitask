@@ -1,11 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Book{% endblock %}
+{% set current_page = 'aside-menu-book' %}
+
+{% block title %}Edit Book{% endblock %}
+
+{% block additional_js %}
+    {{ include('partials/active_menu_script.html.twig') }}
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Book</h1>
-
-    {{ include('book/_form.html.twig') }}
-
-    <a href="{{ path('app_book_index') }}">back to list</a>
+    <div class="card pb-5 ">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Add Book</h5>
+            <div>
+                <a href="{{ path('app_book_index') }}" class="btn btn-secondary">
+                    <i class="bx bx-arrow-back me-0 me-sm-1"></i>
+                    <span class="d-none d-sm-inline-block">Back to List</span>
+                </a>
+            </div>
+        </div>
+        <div class="container-fluid">
+            {{ include('book/_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

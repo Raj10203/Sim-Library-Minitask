@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Book;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,9 +14,24 @@ class BookForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('author')
-            ->add('isAvailable')
+            ->add('title', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Title',
+                    'class' => 'form-control',
+                ]
+            ])
+
+            ->add('author', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Title',
+                    'class' => 'form-control',
+                ]
+            ])
+            ->add('isAvailable', CheckboxType::class, [
+                'attr' => [
+                    'class' => 'form-check-input',
+                ]
+            ])
         ;
     }
 

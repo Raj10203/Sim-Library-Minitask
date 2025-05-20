@@ -2,15 +2,13 @@
 
 {% block title %}User index{% endblock %}
 
-{% set current_page = 'aside-menu-users' %}
+{% set current_page = 'aside-menu-user' %}
 
 {% block additional_js %}
     {{ include('partials/active_menu_script.html.twig') }}
 {% endblock %}
 
-{% block body %} <h3 class="fw-bold py-3 mb-4 ms-3">
-    Users
-</h3>
+{% block body %}
     <!-- Users List Card -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">

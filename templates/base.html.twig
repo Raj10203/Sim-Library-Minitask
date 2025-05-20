@@ -85,34 +85,56 @@
                     </a>
                 </li>
 
-                <li class="menu-item" id="aside-menu-dashboard">
-                    <a href="{{ path('app_user_index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                        <div data-i18n="Analytics">User</div>
-                    </a>
-                </li>
-
-                <!-- Stock -->
-                <li class="menu-item" id="aside-menu-stock">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-layout"></i>
-                        <div class="text-truncate" data-i18n="Layouts">Stock</div>
+                {% if is_granted('ROLE_ADMIN') %}
+                <li class="menu-item" id="aside-menu-admin">
+                    <a href="#" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-crown"></i>
+                        <div class="text-truncate" data-i18n="Layouts">Admin</div>
                     </a>
 
                     <ul class="menu-sub">
-                        <!-- Requests -->
-                        <li class="menu-item" id="aside-menu-stock-requests">
-                            <a href="#" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
-                                <div data-i18n="Categories">Requests</div>
+                        <!-- Users -->
+                        <li class="menu-item" id="aside-menu-user">
+                            <a href="{{ path('app_user_index') }}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-user"></i>
+                                <div data-i18n="Analytics">User</div>
                             </a>
                         </li>
 
-                        <!-- Movements -->
-                        <li class="menu-item" id="aside-menu-stock-movements">
+                        <!-- Book-->
+                        <li class="menu-item" id="aside-menu-book">
+                            <a href="{{ path('app_book_index') }}" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-book"></i>
+                                <div data-i18n="Analytics">Books</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {%  endif %}
+
+
+
+                <!-- Borrow -->
+                <li class="menu-item" id="aside-menu-borrow">
+                    <a href="{{ path('app_book_index') }}" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bx-library"></i>
+                        <div class="text-truncate" data-i18n="Layouts">Library</div>
+                    </a>
+
+                    <ul class="menu-sub">
+                        <!-- Requests Book-->
+                        <li class="menu-item" id="aside-menu-borrow-requests">
                             <a href="#" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-store"></i>
-                                <div data-i18n="Categories">Movements</div>
+                                <i class="menu-icon tf-icons bx bx-book-add"></i>
+                                <div data-i18n="Categories">Borrow Book</div>
+                            </a>
+                        </li>
+
+                        <!-- Movements Return Book-->
+                        <li class="menu-item" id="aside-menu-borrow-return">
+                            <a href="#" class="menu-link">
+                                <i class="menu-icon tf-icons bx bxs-arrow-to-bottom"></i>
+                                <div data-i18n="Categories">Return Book</div>
                             </a>
                         </li>
                     </ul>
