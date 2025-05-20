@@ -4,16 +4,57 @@ namespace App\Repository;
 
 use App\Entity\Loan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @extends ServiceEntityRepository<Loan>
  */
 class LoanRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry  $registry,
+        private Security $security
+    )
     {
         parent::__construct($registry, Loan::class);
+    }
+
+    public function createLoanQueryBuilder(): Query
+    {
+        $query = $this->createQueryBuilder('loan')
+            ->select('loan');
+
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $query = $query->andWhere('loan.user = :user')
+                ->setParameter('user', $this->security->getUser());
+
+        }
+        $query = $query->andWhere('loan.returnedAt IS NULL');
+
+        return $query
+            ->orderBy('loan.dueAt', 'ASC')
+            ->getQuery();
+    }
+
+    public function createDueLoanQueryBuilder(): Query
+    {
+        $query = $this->createQueryBuilder('loan')
+            ->select('loan');
+
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            $query = $query->andWhere('loan.user = :user')
+                ->setParameter('user', $this->security->getUser());
+
+        }
+        $query = $query->andWhere('loan.returnedAt IS NULL')
+            ->andWhere('loan.dueAt < :dueAt')
+            ->setParameter('dueAt', new \DateTime('now'));
+
+        return $query
+            ->orderBy('loan.dueAt', 'ASC')
+            ->getQuery();
     }
 
     //    /**

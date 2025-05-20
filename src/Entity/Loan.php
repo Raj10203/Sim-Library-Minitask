@@ -7,9 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: LoanRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Loan
 {
     use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -27,6 +29,19 @@ class Loan
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $returnedAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $borrowedAt = null;
+
+    #[ORM\PrePersist]
+    public function setDefaults(): void
+    {
+        $now = new \DateTimeImmutable();
+        $this->borrowedAt = new \DateTimeImmutable();
+        if (!$this->dueAt) {
+            $this->dueAt = $now->modify('+14 day');
+        }
+    }
 
     public function getId(): ?int
     {
@@ -77,6 +92,18 @@ class Loan
     public function setReturnedAt(?\DateTimeImmutable $returnedAt): static
     {
         $this->returnedAt = $returnedAt;
+
+        return $this;
+    }
+
+    public function getBorrowedAt(): ?\DateTimeImmutable
+    {
+        return $this->borrowedAt;
+    }
+
+    public function setBorrowedAt(\DateTimeImmutable $borrowedAt): static
+    {
+        $this->borrowedAt = $borrowedAt;
 
         return $this;
     }

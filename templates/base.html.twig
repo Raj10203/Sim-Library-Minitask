@@ -115,7 +115,7 @@
 
 
                 <!-- Borrow -->
-                <li class="menu-item" id="aside-menu-borrow">
+                <li class="menu-item" id="aside-menu-loan">
                     <a href="{{ path('app_book_index') }}" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons bx bx-library"></i>
                         <div class="text-truncate" data-i18n="Layouts">Library</div>
@@ -123,16 +123,16 @@
 
                     <ul class="menu-sub">
                         <!-- Requests Book-->
-                        <li class="menu-item" id="aside-menu-borrow-requests">
-                            <a href="#" class="menu-link">
+                        <li class="menu-item" id="aside-menu-loan-borrow">
+                            <a href="{{ path('app_loan_borrow') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bx-book-add"></i>
                                 <div data-i18n="Categories">Borrow Book</div>
                             </a>
                         </li>
 
                         <!-- Movements Return Book-->
-                        <li class="menu-item" id="aside-menu-borrow-return">
-                            <a href="#" class="menu-link">
+                        <li class="menu-item" id="aside-menu-loan-return">
+                            <a href="{{ path('app_loan_return') }}" class="menu-link">
                                 <i class="menu-icon tf-icons bx bxs-arrow-to-bottom"></i>
                                 <div data-i18n="Categories">Return Book</div>
                             </a>

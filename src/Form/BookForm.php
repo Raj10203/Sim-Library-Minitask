@@ -29,8 +29,9 @@ class BookForm extends AbstractType
             ])
             ->add('isAvailable', CheckboxType::class, [
                 'attr' => [
-                    'class' => 'form-check-input',
-                ]
+                    'class' => 'form-check-input mx-2',
+                ],
+                'required' => false,
             ])
         ;
     }
