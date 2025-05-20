@@ -23,7 +23,7 @@
                         <th>Book Title</th>
                         <th>Author</th>
                         <th>User</th>
-                        <th>DueAt</th>
+                        <th>Due Days</th>
                         <th>Borrowed At</th>
                         <th>actions</th>
                     </tr>
@@ -35,7 +35,7 @@
                             <td>{{ loan.book.title }}</td>
                             <td>{{ loan.book.author }}</td>
                             <td>{{ loan.user.email }}</td>
-                            <td>{{ loan.dueAt ? loan.dueAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>{{ loan.dueAt ? loan.dueAt|days_between(loan.borrowedAt , loan.returnedAt) }} Days</td>
                             <td>{{ loan.borrowedAt ? loan.returnedAt|date('Y-m-d H:i:s') : '' }}</td>
                             <td>
                                 <a href="{{ path('app_loan_return_book', {'id': loan.id}) }}" class="btn btn-sm

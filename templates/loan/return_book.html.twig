@@ -35,8 +35,8 @@
                     <td>{{ loan.book.author }}</td>
                 </tr>
                 <tr>
-                    <th>Due At</th>
-                    <td>{{ loan.dueAt ? loan.dueAt|date('Y-m-d H:i:s') : '' }}</td>
+                    <th>Due Days</th>
+                    <td>{{ loan.dueAt ? loan.dueAt|days_between(loan.borrowedAt , loan.returnedAt) }} Days</td>
                 </tr>
                 <tr>
                     <th>Borrowed At</th>
