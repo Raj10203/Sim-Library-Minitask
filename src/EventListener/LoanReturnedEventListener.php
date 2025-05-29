@@ -6,13 +6,14 @@ use App\Event\LoanReturnedEvent;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Messenger\SendEmailMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\Email;
 
 class LoanReturnedEventListener
 {
     public function __construct(
-        private readonly MailerInterface $mailer
+        private readonly MessageBusInterface $messageBus,
     )
     {
     }
@@ -43,6 +44,6 @@ class LoanReturnedEventListener
             ));
 
         // Send email
-        $this->mailer->send($email);
+        $this->messageBus->dispatch(new SendEmailMessage($email));
     }
 }

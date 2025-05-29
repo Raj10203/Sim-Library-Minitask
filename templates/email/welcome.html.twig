@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Welcome to the Space Bar!</title>
+    <title>Loan Overdue Warning</title>
     <style>
         body {
             margin: 0;
@@ -11,35 +11,43 @@
             background-color: #f3f3f3;
             font-family: Helvetica, Arial, sans-serif;
         }
+
         h1 {
             background-color: #264459;
             color: #ffffff;
             padding: 30px 0 50px 0;
             font-weight: normal;
         }
+
         hr {
             border: none;
             border-top: 3px solid #264459;
             margin: 20px;
         }
+
         .container {
             background-color: #fefefe;
             width: 580px;
             margin: 0 auto;
         }
+
         .bottom {
             background-color: #efefee;
         }
+
         .block {
             margin: 0;
             padding: 10px 20px 20px 20px;
         }
+
         .logo {
             width: 100%;
         }
+
         .text-center {
             text-align: center;
         }
+
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -56,37 +64,27 @@
 <body>
 <div class="body">
     <div class="container">
-        <div class="header text-center">
-            <a href="{{ url('app_home') }}">
-                <img src="{{ absolute_url(asset('bundles/sneat/assets/img/illustrations/page-misc-error-light.png')) }}"
-                     class="logo" alt="SpaceBar Logo">
-            </a>
-        </div>
         <div class="content">
-            <h1 class="text-center">Nice to meet you %name%!</h1>
+            <h1 class="text-center">Important Notice, {{ user.firstName }}!</h1>
             <p class="block">
-                Welcome to <strong>the Space Bar</strong>, we can't wait to read what you have to write.
-                Get started on your first article and connect with the space bar community.
+                Our records show that you have <strong>book loans overdue by more than 25 days</strong>.
+                To avoid further penalties or restrictions, please return your borrowed books as soon as possible.
             </p>
             <p class="block text-center">
-                <a href="{{ url('app_loan_borrow') }}" class="btn">Get writing!</a>
+                <a href="http://www.library.com{{ path('app_loan_return') }}" class="btn">Return Your Books</a>
             </p>
             <p class="block">
-                Check out our existing articles and share your thoughts in the comments!
-            </p>
-            <p class="block text-center">
-                <a href="{{ url('app_loan_return') }}" class="btn">Get reading!</a>
+                If you've already returned your books, please disregard this message.
+                Otherwise, we kindly urge you to take action today.
             </p>
             <p class="block">
-                We're so excited that you've decided to join us in our corner of the universe,
-                it's a friendly one with other creative and insightful writers just like you!
-                Need help from a friend? We're always just a message away.
+                If you need help or have questions, our team is here for you — don’t hesitate to reach out.
             </p>
         </div>
         <div class="footer">
             <p class="block">
-                Cheers,<br><br>
-                Your friendly <em>Space Bar Team</em>
+                Thank you,<br><br>
+                Your friendly <em>Library Team</em>
             </p>
             <p class="block bottom text-center">
                 Sent with ❤️ from the friendly folks at The Space Bar

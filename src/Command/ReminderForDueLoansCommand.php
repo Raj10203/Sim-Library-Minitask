@@ -2,9 +2,8 @@
 
 namespace App\Command;
 
-use App\Event\LoanReturnedEvent;
-use App\Repository\LoanRepository;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use App\Messenger\Message\ReminderMailForDueLoans;
+use App\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,15 +11,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
     name: 'reminderForDueLoans',
-    description: 'Add a short description for your command',
+    description: 'This command sends an email to users who have at least 2 loans that are overdue by at least 25 days.',
 )]
 class ReminderForDueLoansCommand extends Command
 {
-    public function __construct(private EventDispatcherInterface $eventDispatcher)
+    public function __construct(
+        private MessageBusInterface $commandBus,
+        private UserRepository      $userRepository,
+    )
     {
         parent::__construct();
     }
@@ -35,8 +37,13 @@ class ReminderForDueLoansCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $this->eventDispatcher->dispatch(new LoanReturnedEvent(), LoanReturnedEvent::LOAN_RETURNED);
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $users = $this->userRepository->findUserByDueLoans();
+
+        foreach ($users as $user) {
+            $this->commandBus->dispatch(new ReminderMailForDueLoans($user));
+        }
+
+        $io->success('We have sent mail to applicable users.');
 
         return Command::SUCCESS;
     }
