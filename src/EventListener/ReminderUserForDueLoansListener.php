@@ -2,17 +2,19 @@
 
 namespace App\EventListener;
 
-use App\Event\LoanReturnedEvent;
+use App\Event\ReminderUserForDueLoans;
+use App\Repository\UserRepository;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-class LoanReturnedEventListener
+class ReminderUserForDueLoansListener
 {
     public function __construct(
-        private readonly MailerInterface $mailer
+        private readonly MailerInterface $mailer,
+        private readonly UserRepository $userRepository,
     )
     {
     }
@@ -21,17 +23,15 @@ class LoanReturnedEventListener
      * @throws TransportExceptionInterface
      */
     #[NoReturn]
-    #[AsEventListener(event: LoanReturnedEvent::LOAN_RETURNED)]
-    public function onLoanReturned(LoanReturnedEvent $event): void
+    #[AsEventListener(event: ReminderUserForDueLoans::REMINDERUSERFORDUELOANS)]
+    public function onLoanReturned(ReminderUserForDueLoans $event): void
     {
-        $loan = $event->getLoan();
-        $book = $loan->getBook();
+        $users = $this->userRepository->findUserByDueLoans();
 
-        // 1. Mark the book as available
-        $book->setIsAvailable(true);
+        foreach ($users as $user) {
 
-        // 2. Simulate email log
-        $user = $loan->getUser();
+        }
+
         $email = (new Email())
             ->from('admin@example.com')
             ->to($user->getEmail())

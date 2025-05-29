@@ -35,6 +35,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findUserByDueLoans()
+    {
+
+        return $this->createQueryBuilder('user')
+            ->select('user')
+            ->join('user.loans', 'loans')
+            ->where("DATEDIFF(CURRENT_TIMESTAMP(), loans.dueAt) >= 25 and loans.returnedAt IS NULL")
+            ->groupBy('user')
+            ->having('COUNT(loans.id) >= 2')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @return User[] Returns an array of User objects from cache
      */

@@ -3,22 +3,27 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[isGranted('ROLE_LIBRARIAN')]
-class RegistrationController extends BaseController
+class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_auth_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    #[isGranted('ROLE_LIBRARIAN')]
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer
+    ): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -36,6 +41,15 @@ class RegistrationController extends BaseController
             if (in_array('ROLE_LIBRARIAN', $user->getRoles())) {
                 return $this->redirectToRoute('app_user_index');
             }
+
+            $email = (new TemplatedEmail())
+                ->from('admin@example.com')
+                ->to($user->getEmail())
+                ->subject('Welcome')
+                ->htmlTemplate('email/welcome.html.twig');
+
+            $mailer->send($email);
+
             return $this->redirectToRoute('app_home');
         }
 
