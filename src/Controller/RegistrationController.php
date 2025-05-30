@@ -46,7 +46,7 @@ class RegistrationController extends AbstractController
                 ->from('admin@example.com')
                 ->to($user->getEmail())
                 ->subject('Welcome')
-                ->htmlTemplate('email/welcome.html.twig');
+                ->htmlTemplate('email/warning.html.twig');
 
             $mailer->send($email);
 

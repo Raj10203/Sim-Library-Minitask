@@ -29,9 +29,6 @@ class ReminderForDueLoansCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -42,7 +39,8 @@ class ReminderForDueLoansCommand extends Command
         foreach ($users as $user) {
             $this->commandBus->dispatch(new ReminderMailForDueLoans($user));
         }
-
+        $hau = $io->choice('select cotroller', ['a', 'b', 'c', 'd']);
+        $io->success($hau);
         $io->success('We have sent mail to applicable users.');
 
         return Command::SUCCESS;
